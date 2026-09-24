@@ -1,0 +1,61 @@
+<div style="max-width: 950px; margin: 0 auto; font-family: sans-serif;">
+  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Tabelas Rápidas de Consulta de Usinagem</h2>
+  <p style="color: #64748b;">Consulte parâmetros operacionais recomendados de velocidade de corte (Vc) e avanços agrupados por classificação ISO.</p>
+
+  <!-- Filtros e Busca -->
+  <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; margin-bottom: 1.5rem; background-color: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <div style="flex: 1; min-width: 240px;">
+      <label style="display: block; font-size: 0.85rem; font-weight: bold; color: #475569; margin-bottom: 0.3rem;">Buscar Material:</label>
+      <input type="text" [(ngModel)]="filtro" placeholder="Digite 1045, Inox, Titânio..." style="width: 100%; padding: 0.5rem 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem;">
+    </div>
+
+    <div>
+      <label style="display: block; font-size: 0.85rem; font-weight: bold; color: #475569; margin-bottom: 0.3rem;">Grupo ISO:</label>
+      <select [(ngModel)]="categoriaFiltro" style="padding: 0.5rem 0.8rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.95rem; background-color: white;">
+        <option value="todas">Todos os Grupos</option>
+        <option value="P">Grupo P - Aços</option>
+        <option value="M">Grupo M - Inoxidáveis</option>
+        <option value="K">Grupo K - Ferro Fundido</option>
+        <option value="N">Grupo N - Não-Ferrosos</option>
+        <option value="S">Grupo S - Superligas e Titânio</option>
+        <option value="H">Grupo H - Materiais Endurecidos</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Tabela de Dados -->
+  <div style="overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; background-color: white; border: 1px solid #cbd5e1; text-align: left;">
+      <thead>
+        <tr style="background-color: #0f172a; color: white;">
+          <th style="padding: 0.75rem; border: 1px solid #334155;">Grupo ISO</th>
+          <th style="padding: 0.75rem; border: 1px solid #334155;">Material / Liga</th>
+          <th style="padding: 0.75rem; border: 1px solid #334155;">Categoria</th>
+          <th style="padding: 0.75rem; border: 1px solid #334155;">Vc Recomendada</th>
+          <th style="padding: 0.75rem; border: 1px solid #334155;">Avanço Típico</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of materiaisFiltrados; track item.material) {
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 0.75rem; text-align: center;">
+              <span [style.background-color]="item.corTag" style="color: white; font-weight: bold; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">
+                ISO {{ item.codigoIso }}
+              </span>
+            </td>
+            <td style="padding: 0.75rem; font-weight: bold; color: #1e293b;">{{ item.material }}</td>
+            <td style="padding: 0.75rem; color: #64748b; font-size: 0.9rem;">{{ item.categoria }}</td>
+            <td style="padding: 0.75rem; color: #0284c7; font-weight: bold;">{{ item.vcDureza }}</td>
+            <td style="padding: 0.75rem; color: #16a34a; font-weight: bold;">{{ item.avancoRecomendado }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" style="padding: 2rem; text-align: center; color: #94a3b8;">
+              Nenhum material encontrado para os filtros selecionados.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

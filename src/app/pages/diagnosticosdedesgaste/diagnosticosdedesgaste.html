@@ -1,0 +1,48 @@
+<div style="max-width: 850px; margin: 0 auto; font-family: sans-serif;">
+  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Diagnóstico de Desgaste por IA</h2>
+  <p style="color: #64748b;">Selecione um padrão de desgaste para obter a análise automática da causa raiz e as soluções recomendadas.</p>
+
+  <!-- Botões de Exemplo Rápidos -->
+  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.2rem; margin-top: 1.5rem;">
+    <h3 style="margin-top: 0; color: #1e293b; font-size: 1.05rem;">Simular Análise de Inserto</h3>
+    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
+      <button (click)="simularAnalise('flanco')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Desgaste de Flanco
+      </button>
+      <button (click)="simularAnalise('bue')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Aresta Postiça (BUE)
+      </button>
+      <button (click)="simularAnalise('lascamento')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Lascamento na Aresta
+      </button>
+    </div>
+  </div>
+
+  <!-- Indicador de Processamento -->
+  <div *ngIf="analisando" style="margin-top: 2rem; text-align: center; padding: 2rem; background-color: #f1f5f9; border-radius: 8px;">
+    <span style="font-size: 1.1rem; font-weight: bold; color: #0284c7;">A analisar padrão com inteligência artificial...</span>
+  </div>
+
+  <!-- Exibição do Diagnóstico -->
+  <div *ngIf="resultado && !analisando" style="margin-top: 1.5rem; background-color: #0f172a; color: white; border-radius: 8px; padding: 1.5rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 0.8rem;">
+      <h3 style="margin: 0; color: #38bdf8;">{{ resultado.tipo }}</h3>
+      <span style="padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"
+            [style.background-color]="resultado.severidade === 'Alta' ? '#ef4444' : resultado.severidade === 'Média' ? '#f59e0b' : '#10b981'">
+        Severidade: {{ resultado.severidade }}
+      </span>
+    </div>
+
+    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+      <div>
+        <strong style="color: #94a3b8; display: block; font-size: 0.9rem;">Causa Provável:</strong>
+        <p style="margin: 0.3rem 0 0 0; color: #f8fafc;">{{ resultado.causa }}</p>
+      </div>
+
+      <div>
+        <strong style="color: #94a3b8; display: block; font-size: 0.9rem;">Ação Recomendada:</strong>
+        <p style="margin: 0.3rem 0 0 0; color: #4ade80;">{{ resultado.solucao }}</p>
+      </div>
+    </div>
+  </div>
+</div>

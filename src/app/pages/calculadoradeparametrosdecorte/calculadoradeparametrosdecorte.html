@@ -1,0 +1,384 @@
+<div style="max-width: 1100px; margin: 0 auto; font-family: sans-serif;">
+  <!-- Cabeçalho -->
+  <div style="border-bottom: 2px solid #0284c7; padding-bottom: 0.5rem; margin-bottom: 1.25rem;">
+    <h1 style="margin: 0; color: #0f172a; font-size: 1.8rem; display: flex; align-items: center; gap: 0.6rem;">
+      <span>🧮</span> Calculadora Técnica de Usinagem
+    </h1>
+    <p style="margin: 0.4rem 0 0 0; color: #64748b; font-size: 0.95rem;">
+      Selecione a operação abaixo para realizar cálculos precisos de velocidade, força, rugosidade e tempo de produção.
+    </p>
+  </div>
+
+  <!-- NAVEGAÇÃO DE ABAS (6 Tipos de Cálculos) -->
+  <div style="display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 1.25rem; border-bottom: 1px solid #e2e8f0;">
+    <button
+      (click)="abaAtiva = 'fresamento'"
+      [style.background-color]="abaAtiva === 'fresamento' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'fresamento' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      ⚙️ Fresamento
+    </button>
+    <button
+      (click)="abaAtiva = 'torneamento'"
+      [style.background-color]="abaAtiva === 'torneamento' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'torneamento' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      🌀 Torneamento
+    </button>
+    <button
+      (click)="abaAtiva = 'furacao'"
+      [style.background-color]="abaAtiva === 'furacao' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'furacao' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      🎯 Furação
+    </button>
+    <button
+      (click)="abaAtiva = 'rugosidade'"
+      [style.background-color]="abaAtiva === 'rugosidade' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'rugosidade' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      📐 Rugosidade (Ra/Rz)
+    </button>
+    <button
+      (click)="abaAtiva = 'potencia'"
+      [style.background-color]="abaAtiva === 'potencia' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'potencia' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      ⚡ Força & Potência
+    </button>
+    <button
+      (click)="abaAtiva = 'tempo'"
+      [style.background-color]="abaAtiva === 'tempo' ? '#0284c7' : '#f1f5f9'"
+      [style.color]="abaAtiva === 'tempo' ? 'white' : '#334155'"
+      style="padding: 0.6rem 1rem; border-radius: 8px 8px 0 0; border: none; font-weight: bold; font-size: 0.88rem; cursor: pointer; white-space: nowrap;"
+    >
+      ⏱️ Tempo de Corte
+    </button>
+  </div>
+
+  <!-- Presets para Fresamento, Torneamento e Furação -->
+  @if (abaAtiva === 'fresamento' || abaAtiva === 'torneamento' || abaAtiva === 'furacao') {
+    <div style="margin-bottom: 1.25rem; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 0.8rem 1rem; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+      <span style="font-size: 0.85rem; font-weight: bold; color: #475569;">
+        ⚡ Sugestões por Material:
+      </span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+        @for (preset of presetsUsinagem; track preset.nome) {
+          <button
+            type="button"
+            (click)="aplicarPreset(preset)"
+            style="background-color: white; border: 1px solid #cbd5e1; color: #1e293b; padding: 0.35rem 0.75rem; border-radius: 16px; font-size: 0.8rem; font-weight: 500; cursor: pointer;"
+          >
+            {{ preset.nome }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 1: FRESAMENTO -->
+  @if (abaAtiva === 'fresamento') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Parâmetros de Entrada</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
+            <input type="number" [(ngModel)]="fres_vc" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Diâmetro D (mm):</label>
+            <input type="number" [(ngModel)]="fres_d" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">fz (mm/dente):</label>
+            <input type="number" step="0.01" [(ngModel)]="fres_fz" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Nº Dentes (Z):</label>
+            <input type="number" [(ngModel)]="fres_z" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Profundidade ap (mm):</label>
+            <input type="number" step="0.5" [(ngModel)]="fres_ap" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Largura ae (mm):</label>
+            <input type="number" step="0.5" [(ngModel)]="fres_ae" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Resultados do Fresamento</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">ROTAÇÃO (n)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #38bdf8;">{{ fres_rpm }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> RPM</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #4ade80;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">AVANÇO (Vf)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #4ade80;">{{ fres_vf }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm/min</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #facc15;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">AVANÇO / REV (fn)</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #facc15;">{{ fres_fn }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm/volta</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #f43f5e;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">REMOÇÃO (Q)</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #f43f5e;">{{ fres_q }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> cm³/min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 2: TORNEAMENTO -->
+  @if (abaAtiva === 'torneamento') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Parâmetros de Torneamento</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
+            <input type="number" [(ngModel)]="torn_vc" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Diâmetro Peça D (mm):</label>
+            <input type="number" [(ngModel)]="torn_d" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">fn (mm/volta):</label>
+            <input type="number" step="0.02" [(ngModel)]="torn_fn" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Profundidade ap (mm):</label>
+            <input type="number" step="0.5" [(ngModel)]="torn_ap" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Resultados do Torneamento</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">ROTAÇÃO (n)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #38bdf8;">{{ torn_rpm }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> RPM</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #4ade80;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">AVANÇO (Vf)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #4ade80;">{{ torn_vf }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm/min</span>
+          </div>
+          <div style="grid-column: 1 / -1; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #f43f5e;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">TAXA DE REMOÇÃO DE MATERIAL (Q)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #f43f5e;">{{ torn_q }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> cm³/min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 3: FURAÇÃO -->
+  @if (abaAtiva === 'furacao') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Parâmetros da Furação</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
+            <input type="number" [(ngModel)]="fur_vc" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Diâmetro Broca D (mm):</label>
+            <input type="number" [(ngModel)]="fur_d" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">fn (mm/volta):</label>
+            <input type="number" step="0.02" [(ngModel)]="fur_fn" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Ângulo Ponta Broca (°):</label>
+            <select [(ngModel)]="fur_angulo" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white; box-sizing: border-box;">
+              <option [value]="118">118° (Aço Convencional)</option>
+              <option [value]="135">135° (Inox / Metal Duro)</option>
+              <option [value]="140">140° (Alta Performance)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Resultados da Furação</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">ROTAÇÃO (n)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #38bdf8;">{{ fur_rpm }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> RPM</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #4ade80;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">AVANÇO (Vf)</span>
+            <span style="font-size: 1.8rem; font-weight: 800; color: #4ade80;">{{ fur_vf }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm/min</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #facc15;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">ALTURA PONTA BROCA (h)</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #facc15;">{{ fur_h }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #f43f5e;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">REMOÇÃO (Q)</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #f43f5e;">{{ fur_q }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> cm³/min</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 4: RUGOSIDADE TEÓRICA -->
+  @if (abaAtiva === 'rugosidade') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Dados de Acabamento</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.8rem;">
+          <div>
+            <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Avanço por Volta fn (mm/rev):</label>
+            <input type="number" step="0.01" [(ngModel)]="rug_fn" style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Raio da Ponta da Ferramenta rε (mm):</label>
+            <select [(ngModel)]="rug_r" style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white; box-sizing: border-box; margin-top: 0.2rem;">
+              <option [value]="0.2">0.2 mm (Acabamento Fino)</option>
+              <option [value]="0.4">0.4 mm (Padronizado Inserto Médio)</option>
+              <option [value]="0.8">0.8 mm (Uso Geral / Desbaste Leve)</option>
+              <option [value]="1.2">1.2 mm (Desbaste Pesado)</option>
+              <option [value]="1.6">1.6 mm (Raio Grande / Alta Resistência)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Rugosidade Teórica Esperada</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; border-left: 4px solid #38bdf8; text-align: center;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">RUGOSIDADE Ra</span>
+            <span style="font-size: 2.2rem; font-weight: 800; color: #38bdf8;">{{ rug_ra }}</span>
+            <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: bold; display: block;"> µm (microns)</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; border-left: 4px solid #4ade80; text-align: center;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">ALTURA TOTAL Rz / Rt</span>
+            <span style="font-size: 2.2rem; font-weight: 800; color: #4ade80;">{{ rug_rt }}</span>
+            <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: bold; display: block;"> µm (microns)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 5: FORÇA E POTÊNCIA DE CORTE -->
+  @if (abaAtiva === 'potencia') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Parâmetros de Potência</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem;">
+          <div style="grid-column: 1 / -1;">
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Material da Peça (kc - Pressão de Corte):</label>
+            <select [(ngModel)]="pot_materialSelect" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white; box-sizing: border-box;">
+              @for (mat of pot_materiais; track $index) {
+                <option [value]="$index">{{ mat.nome }} (kc ≈ {{ mat.kc }} N/mm²)</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Profundidade ap (mm):</label>
+            <input type="number" step="0.5" [(ngModel)]="pot_ap" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Avanço fn ou fz (mm):</label>
+            <input type="number" step="0.02" [(ngModel)]="pot_fn" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
+            <input type="number" [(ngModel)]="pot_vc" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Rendimento Motor (%):</label>
+            <input type="number" [(ngModel)]="pot_rendimento" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Força e Potência Necessária</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">FORÇA DE CORTE (Fc)</span>
+            <span style="font-size: 1.6rem; font-weight: 800; color: #38bdf8;">{{ pot_fc }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> N ({{ pot_fc_kgf }} kgf)</span>
+          </div>
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #4ade80;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">POTÊNCIA CORTE (Pc)</span>
+            <span style="font-size: 1.6rem; font-weight: 800; color: #4ade80;">{{ pot_pc_kw }}</span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> kW</span>
+          </div>
+          <div style="grid-column: 1 / -1; background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 3px solid #facc15; text-align: center;">
+            <span style="font-size: 0.75rem; color: #94a3b8; display: block;">POTÊNCIA MÍNIMA DO MOTOR (Pm)</span>
+            <span style="font-size: 2rem; font-weight: 800; color: #facc15;">{{ pot_pm_cv }}</span>
+            <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: bold;"> CV (Cavalos-Vapor)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CONTEÚDO DA ABA 6: TEMPO DE USINAGEM -->
+  @if (abaAtiva === 'tempo') {
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+      <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Dimensões do Percurso</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 0.8rem;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Comprimento Peça L (mm):</label>
+            <input type="number" [(ngModel)]="tempo_comprimento" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Entrada/Saída Lu (mm):</label>
+            <input type="number" [(ngModel)]="tempo_extra" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Avanço Mesa Vf (mm/min):</label>
+            <input type="number" [(ngModel)]="tempo_vf" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Número de Passes:</label>
+            <input type="number" [(ngModel)]="tempo_passes" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box;">
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem;">
+        <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem;">Tempo Estimado de Produção</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+          <div style="background: rgba(255,255,255,0.05); padding: 1.2rem; border-radius: 8px; border-left: 4px solid #4ade80; text-align: center;">
+            <span style="font-size: 0.8rem; color: #94a3b8; font-weight: bold; display: block;">TEMPO TOTAL DE CORTE (Tc)</span>
+            <span style="font-size: 2.8rem; font-weight: 800; color: #4ade80; margin: 0.2rem 0;">{{ tempo_formatado }}</span>
+            <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: bold;">({{ tempo_tc_min }} minutos)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

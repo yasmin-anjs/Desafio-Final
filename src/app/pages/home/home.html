@@ -1,0 +1,51 @@
+<div style="max-width: 1100px; margin: 0 auto; font-family: sans-serif;">
+  <!-- Banner Principal -->
+  <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 2.5rem 2rem; border-radius: 12px; margin-bottom: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <h1 style="margin: 0; font-size: 2.2rem; color: #38bdf8;">⚙️ UsinaHub 4.0</h1>
+    <p style="margin-top: 0.8rem; font-size: 1.1rem; color: #cbd5e1; max-width: 850px; line-height: 1.6;">
+      Bem-vindo ao portal integrado de engenharia de fabricação e usinagem. Acesse rapidamente as ferramentas de cálculo, diagnóstico, metrologia e gestão operacional para processos convencionais e CNC.
+    </p>
+
+    <!-- Imagem Local (salva na pasta public) -->
+    <div style="margin: 1.5rem 0; border-radius: 10px; overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.4); border: 1px solid #334155;">
+      <img
+        src="/usinagem.jpg"
+        alt="Processo de Usinagem, Tornos, Fresas e Metrologia"
+        style="width: 100%; height: 320px; object-fit: cover; display: block;"
+      >
+    </div>
+
+    <!-- Bloco explicativo: O que é a Usinagem -->
+    <div style="background: rgba(255, 255, 255, 0.05); padding: 1.25rem; border-radius: 8px; border-left: 4px solid #38bdf8;">
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.15rem; color: #f8fafc;">💡 O que é a Usinagem?</h3>
+      <p style="margin: 0; font-size: 0.95rem; color: #94a3b8; line-height: 1.6;">
+        A usinagem é o conjunto de processos de fabricação mecânica que confere forma, dimensão e acabamento a uma peça através da remoção progressiva de cavacos do material bruto. Abrange operações em tornos, fresadoras, furadeiras e centros CNC, utilizando ferramentas como brocas, machos e pastilhas, além de instrumentos de precisão como paquímetros, micrómetros e goniômetros.
+      </p>
+    </div>
+  </div>
+
+  <!-- Grelha de Módulos (Sem Carrossel) -->
+  <h2 style="color: #0f172a; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">Módulos de Acesso Rápido</h2>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem;">
+    @for (modulo of modulos; track modulo.titulo) {
+      <a [routerLink]="modulo.rota" style="text-decoration: none; color: inherit;">
+        <div style="background-color: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1.25rem; height: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+              <span style="font-size: 1.8rem;">{{ modulo.icone }}</span>
+              <span [style.background-color]="modulo.corTag" style="color: white; font-size: 0.75rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px;">
+                Módulo
+              </span>
+            </div>
+            <h3 style="margin: 0 0 0.5rem 0; color: #0f172a; font-size: 1.15rem;">{{ modulo.titulo }}</h3>
+            <p style="margin: 0; color: #64748b; font-size: 0.9rem; line-height: 1.4;">{{ modulo.descricao }}</p>
+          </div>
+          <div style="margin-top: 1.25rem; font-size: 0.85rem; font-weight: bold; color: #0284c7;">
+            Acessar o módulo →
+          </div>
+        </div>
+      </a>
+    }
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div style="max-width: 900px; margin: 0 auto; font-family: sans-serif;">
+  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Guia de Uso de Ferramentas e Torques</h2>
+  <p style="color: #64748b;">Consulte os métodos de fixação e os torques de aperto recomendados para cada tipo de ferramenta.</p>
+
+  <!-- Filtro de Categorias -->
+  <div style="margin-top: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
+    <label style="font-weight: bold; color: #334155; margin-right: 0.5rem;">Filtrar Categoria:</label>
+    <select [(ngModel)]="categoriaSelecionada" style="padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+      <option value="todas">Todas as Ferramentas</option>
+      <option value="torneamento">Torneamento</option>
+      <option value="fresar">Fresamento</option>
+      <option value="broca">Furação</option>
+    </select>
+  </div>
+
+  <!-- Lista de Cartões -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+    @for (f of ferramentasFiltradas; track f.tipo) {
+      <div style="background-color: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <h3 style="margin-top: 0; color: #0284c7; font-size: 1.1rem;">{{ f.tipo }}</h3>
+        <p style="font-size: 0.9rem; color: #475569; margin: 0.5rem 0;"><strong>Aplicação:</strong> {{ f.aplicacao }}</p>
+        <p style="font-size: 0.9rem; color: #475569; margin: 0.5rem 0;"><strong>Fixação:</strong> {{ f.fixacao }}</p>
+        
+        <div style="margin-top: 1rem; background-color: #0f172a; color: white; padding: 0.75rem; border-radius: 6px; text-align: center;">
+          <span style="font-size: 0.8rem; color: #94a3b8; display: block;">Torque Recomendado</span>
+          <strong style="font-size: 1.2rem; color: #facc15;">{{ f.torqueRecomendado }}</strong>
+        </div>
+      </div>
+    }
+  </div>
+</div>

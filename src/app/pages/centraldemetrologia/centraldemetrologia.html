@@ -1,0 +1,190 @@
+<div style="max-width: 1100px; margin: 0 auto; font-family: sans-serif;">
+  <!-- Cabeçalho -->
+  <div style="border-bottom: 2px solid #0284c7; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+    <h1 style="margin: 0; color: #0f172a; font-size: 1.8rem; display: flex; align-items: center; gap: 0.6rem;">
+      <span>📐</span> Central de Metrologia
+    </h1>
+    <p style="margin: 0.4rem 0 0 0; color: #64748b; font-size: 0.95rem;">
+      Simulador de leitura para paquímetro digital e calculadora de tolerâncias dimensionais (ISO 286).
+    </p>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+    <!-- SEÇÃO 1: SIMULADOR DE PAQUÍMETRO DIGITAL -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 style="margin: 0; color: #1e293b; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>📏</span> 1. Simulador de Paquímetro Digital
+        </h3>
+        
+        <!-- Presets Rápidos -->
+        <div style="display: flex; gap: 0.3rem; align-items: center;">
+          <span style="font-size: 0.75rem; font-weight: bold; color: #64748b; margin-right: 0.3rem;">Presets:</span>
+          <button type="button" (click)="paq_valor = 6.35" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: #334155;">1/4"</button>
+          <button type="button" (click)="paq_valor = 12.7" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: #334155;">1/2"</button>
+          <button type="button" (click)="paq_valor = 25.4" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: #334155;">1"</button>
+          <button type="button" (click)="paq_valor = 50.0" style="background: #f1f5f9; border: 1px solid #cbd5e1; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem; font-weight: bold; cursor: pointer; color: #334155;">50mm</button>
+        </div>
+      </div>
+
+      <!-- VISOR LCD DO PAQUÍMETRO -->
+      <div style="background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%); border-radius: 12px; padding: 1.25rem 1.5rem; border: 2px solid #334155; margin-bottom: 1.25rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.7rem; letter-spacing: 1px; color: #64748b; font-weight: bold; text-transform: uppercase;">LCD DISPLAY METROLOGIA</span>
+            <span style="display: inline-block; width: 8px; height: 8px; background-color: #22c55e; border-radius: 50%; box-shadow: 0 0 6px #22c55e;"></span>
+          </div>
+
+          <!-- Botões do Visor (mm/inch e Zero) -->
+          <div style="display: flex; gap: 0.4rem;">
+            <button 
+              type="button" 
+              (click)="paq_unidade = (paq_unidade === 'mm' ? 'in' : 'mm')" 
+              style="background: #0284c7; color: white; border: none; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+              {{ paq_unidade === 'mm' ? 'mm / INCH' : 'INCH / mm' }}
+            </button>
+            <button 
+              type="button" 
+              (click)="paq_valor = 0" 
+              style="background: #dc2626; color: white; border: none; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; font-weight: bold; cursor: pointer;">
+              ZERO
+            </button>
+          </div>
+        </div>
+
+        <!-- Leitura Principal -->
+        <div style="display: flex; justify-content: center; align-items: baseline; margin: 0.8rem 0; gap: 0.5rem;">
+          <span style="font-family: 'Courier New', Courier, monospace; font-size: 3.2rem; font-weight: 800; color: #38bdf8; text-shadow: 0 0 12px rgba(56, 189, 248, 0.4); letter-spacing: 2px;">
+            {{ paq_unidade === 'mm' ? (paq_valor | number:'1.2-2') : ((paq_valor / 25.4) | number:'1.4-4') }}
+          </span>
+          <span style="font-size: 1.2rem; font-weight: bold; color: #94a3b8; font-family: sans-serif;">
+            {{ paq_unidade }}
+          </span>
+        </div>
+
+        <!-- Simulação Gráfica dos Bicos -->
+        <div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #64748b; font-weight: bold; margin-bottom: 0.3rem;">
+            <span>Abertura dos Bicos:</span>
+            <span>{{ (paq_valor / 150 * 100) | number:'1.0-0' }}% da escala max.</span>
+          </div>
+          <div style="background: #334155; height: 10px; border-radius: 5px; overflow: hidden; position: relative;">
+            <div [style.width.%]="(paq_valor / 150) * 100" style="background: linear-gradient(90deg, #0284c7, #38bdf8); height: 100%; transition: width 0.1s ease;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controle Deslizante (Slider) -->
+      <div>
+        <label style="font-size: 0.85rem; font-weight: bold; color: #475569; display: block; margin-bottom: 0.4rem;">
+          Ajustar Abertura dos Bicos (0 a 150 mm):
+        </label>
+        <input 
+          type="range" 
+          min="0" 
+          max="150" 
+          step="0.05" 
+          [(ngModel)]="paq_valor" 
+          style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; outline: none; cursor: pointer; accent-color: #0284c7;">
+        
+        <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; margin-top: 0.3rem; font-weight: 500;">
+          <span>0.00 mm</span>
+          <span>75.00 mm</span>
+          <span>150.00 mm</span>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- SEÇÃO 2: TOLERÂNCIAS DIMENSIONAIS (ISO 286) -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      <h3 style="margin-top: 0; margin-bottom: 1.25rem; color: #1e293b; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">
+        <span>🎯</span> 2. Tolerâncias Dimensionais (ISO 286)
+      </h3>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div>
+          <label style="font-size: 0.85rem; font-weight: bold; color: #475569; display: block; margin-bottom: 0.3rem;">
+            Dimensão Nominal (mm):
+          </label>
+          <input 
+            type="number" 
+            [(ngModel)]="iso_nominal" 
+            placeholder="Ex: 50"
+            style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem;">
+        </div>
+
+        <div>
+          <label style="font-size: 0.85rem; font-weight: bold; color: #475569; display: block; margin-bottom: 0.3rem;">
+            Classe / Tolerância:
+          </label>
+          <select 
+            [(ngModel)]="iso_classe" 
+            style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; background: white; box-sizing: border-box; font-size: 0.95rem;">
+            <optgroup label="Furos (Ajustes Fêmea)">
+              <option value="H7">Furo H7 (Ajuste Padrão)</option>
+              <option value="H8">Furo H8 (Uso Geral)</option>
+              <option value="F8">Furo F8 (Folga Ampla)</option>
+              <option value="JS7">Furo JS7 (Simétrico)</option>
+            </optgroup>
+            <optgroup label="Eixos (Ajustes Macho)">
+              <option value="h6">Eixo h6 (Ajuste Deslizante)</option>
+              <option value="g6">Eixo g6 (Folga Justa)</option>
+              <option value="k6">Eixo k6 (Interferência Leve)</option>
+              <option value="p6">Eixo p6 (Prensado / Fixo)</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- PAINEL DE RESULTADOS ESCURO -->
+      <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 12px; padding: 1.25rem; border-top: 3px solid #0284c7;">
+        <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; font-weight: bold; display: block; margin-bottom: 0.8rem;">
+          Especificação Dimensional Resultante
+        </span>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+          
+          <!-- Limite Máximo -->
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #38bdf8;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">LIMITE MÁXIMO</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #38bdf8;">
+              {{ (iso_nominal + iso_afast_sup) | number:'1.3-3' }}
+            </span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm</span>
+          </div>
+
+          <!-- Afastamentos -->
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #facc15;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">AFASTAMENTOS (Sup/Inf)</span>
+            <span style="font-size: 1.3rem; font-weight: 800; color: #facc15;">
+              {{ iso_afast_sup >= 0 ? '+' + iso_afast_sup : iso_afast_sup }} / {{ iso_afast_inf >= 0 ? '+' + iso_afast_inf : iso_afast_inf }}
+            </span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold; display: block;"> mm</span>
+          </div>
+
+          <!-- Limite Mínimo -->
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #4ade80;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">LIMITE MÍNIMO</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #4ade80;">
+              {{ (iso_nominal + iso_afast_inf) | number:'1.3-3' }}
+            </span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> mm</span>
+          </div>
+
+          <!-- Campo de Tolerância (IT) -->
+          <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; border-left: 4px solid #c084fc;">
+            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: bold; display: block;">CAMPO TOLERÂNCIA (IT)</span>
+            <span style="font-size: 1.5rem; font-weight: 800; color: #c084fc;">
+              {{ (iso_afast_sup - iso_afast_inf) * 1000 | number:'1.0-0' }}
+            </span>
+            <span style="font-size: 0.75rem; color: #cbd5e1; font-weight: bold;"> µm (microns)</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
