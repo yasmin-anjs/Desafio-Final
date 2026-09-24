@@ -1,48 +1,136 @@
-<div style="max-width: 850px; margin: 0 auto; font-family: sans-serif;">
-  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Diagnóstico de Desgaste por IA</h2>
-  <p style="color: #64748b;">Selecione um padrão de desgaste para obter a análise automática da causa raiz e as soluções recomendadas.</p>
+<div style="max-width: 1100px; margin: 0 auto; font-family: sans-serif; padding: 1rem;">
+  
+  <!-- Cabeçalho -->
+  <div style="border-bottom: 2px solid #0284c7; padding-bottom: 0.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 0.8rem;">
+    <div>
+      <h1 style="margin: 0; color: #0f172a; font-size: 1.8rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>🤖</span> Diagnóstico de Desgaste por IA
+      </h1>
+      <p style="margin: 0.4rem 0 0 0; color: #64748b; font-size: 0.95rem;">
+        Selecione um padrão de desgaste para obter a análise automática da causa raiz e as soluções recomendadas.
+      </p>
+    </div>
 
-  <!-- Botões de Exemplo Rápidos -->
-  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.2rem; margin-top: 1.5rem;">
-    <h3 style="margin-top: 0; color: #1e293b; font-size: 1.05rem;">Simular Análise de Inserto</h3>
-    <div style="display: flex; gap: 0.8rem; flex-wrap: wrap;">
-      <button (click)="simularAnalise('flanco')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
-        Desgaste de Flanco
-      </button>
-      <button (click)="simularAnalise('bue')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
-        Aresta Postiça (BUE)
-      </button>
-      <button (click)="simularAnalise('lascamento')" style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
-        Lascamento na Aresta
-      </button>
+    <div style="background-color: #f0fdf4; border: 1px solid #86efac; color: #166534; padding: 0.5rem 0.9rem; border-radius: 8px; font-size: 0.82rem; font-weight: bold; display: flex; align-items: center; gap: 0.4rem;">
+      <span style="width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block;"></span> IA Modelo: Ativo (v2.4)
     </div>
   </div>
 
-  <!-- Indicador de Processamento -->
-  <div *ngIf="analisando" style="margin-top: 2rem; text-align: center; padding: 2rem; background-color: #f1f5f9; border-radius: 8px;">
-    <span style="font-size: 1.1rem; font-weight: bold; color: #0284c7;">A analisar padrão com inteligência artificial...</span>
-  </div>
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
 
-  <!-- Exibição do Diagnóstico -->
-  <div *ngIf="resultado && !analisando" style="margin-top: 1.5rem; background-color: #0f172a; color: white; border-radius: 8px; padding: 1.5rem;">
-    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 0.8rem;">
-      <h3 style="margin: 0; color: #38bdf8;">{{ resultado.tipo }}</h3>
-      <span style="padding: 0.3rem 0.8rem; border-radius: 4px; font-size: 0.85rem; font-weight: bold;"
-            [style.background-color]="resultado.severidade === 'Alta' ? '#ef4444' : resultado.severidade === 'Média' ? '#f59e0b' : '#10b981'">
-        Severidade: {{ resultado.severidade }}
-      </span>
+    <!-- PAINEL 1: SELEÇÃO DE DESGASTE -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span>🔍</span> 1. Selecionar Padrão de Desgaste
+      </h3>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        
+        <div 
+          (click)="selecionarDesgaste('flanco')"
+          [style.borderColor]="opcaoSelecionada === 'flanco' ? '#0284c7' : '#e2e8f0'"
+          [style.backgroundColor]="opcaoSelecionada === 'flanco' ? '#f0f9ff' : '#ffffff'"
+          style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.5rem;">⚡</span>
+            <span style="background: #e0f2fe; color: #0369a1; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px;">Comum</span>
+          </div>
+          <h4 style="margin: 0 0 0.3rem 0; color: #0f172a; font-size: 0.95rem;">Desgaste de Flanco (VB)</h4>
+          <p style="margin: 0; color: #64748b; font-size: 0.8rem;">Atrito natural no gume de corte pela usinagem.</p>
+        </div>
+
+        <div 
+          (click)="selecionarDesgaste('bue')"
+          [style.borderColor]="opcaoSelecionada === 'bue' ? '#0284c7' : '#e2e8f0'"
+          [style.backgroundColor]="opcaoSelecionada === 'bue' ? '#f0f9ff' : '#ffffff'"
+          style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.5rem;">🧪</span>
+            <span style="background: #fef3c7; color: #92400e; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px;">Adesão</span>
+          </div>
+          <h4 style="margin: 0 0 0.3rem 0; color: #0f172a; font-size: 0.95rem;">Aresta Postiça (BUE)</h4>
+          <p style="margin: 0; color: #64748b; font-size: 0.8rem;">Aderência do material da peça no inserto.</p>
+        </div>
+
+        <div 
+          (click)="selecionarDesgaste('lascamento')"
+          [style.borderColor]="opcaoSelecionada === 'lascamento' ? '#0284c7' : '#e2e8f0'"
+          [style.backgroundColor]="opcaoSelecionada === 'lascamento' ? '#f0f9ff' : '#ffffff'"
+          style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.5rem;">💥</span>
+            <span style="background: #fef2f2; color: #991b1b; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px;">Crítico</span>
+          </div>
+          <h4 style="margin: 0 0 0.3rem 0; color: #0f172a; font-size: 0.95rem;">Lascamento na Aresta</h4>
+          <p style="margin: 0; color: #64748b; font-size: 0.8rem;">Pequenas quebras na borda de corte.</p>
+        </div>
+
+        <div 
+          (click)="selecionarDesgaste('trinca')"
+          [style.borderColor]="opcaoSelecionada === 'trinca' ? '#0284c7' : '#e2e8f0'"
+          [style.backgroundColor]="opcaoSelecionada === 'trinca' ? '#f0f9ff' : '#ffffff'"
+          style="border: 2px solid #e2e8f0; border-radius: 10px; padding: 1rem; cursor: pointer; transition: all 0.2s;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.5rem;">🔥</span>
+            <span style="background: #f3e8ff; color: #6b21a8; font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.5rem; border-radius: 4px;">Térmico</span>
+          </div>
+          <h4 style="margin: 0 0 0.3rem 0; color: #0f172a; font-size: 0.95rem;">Trinca Térmica</h4>
+          <p style="margin: 0; color: #64748b; font-size: 0.8rem;">Fissuras por variação rápida de temperatura.</p>
+        </div>
+
+      </div>
     </div>
 
-    <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
-      <div>
-        <strong style="color: #94a3b8; display: block; font-size: 0.9rem;">Causa Provável:</strong>
-        <p style="margin: 0.3rem 0 0 0; color: #f8fafc;">{{ resultado.causa }}</p>
+    <!-- PAINEL 2: RESULTADO DO DIAGNÓSTICO -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.8rem; margin-bottom: 1rem;">
+        <h3 style="margin: 0; color: #0f172a; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>📊</span> Resultado do Diagnóstico por IA
+        </h3>
+        <span style="background: #0284c7; color: white; font-weight: bold; font-size: 0.75rem; padding: 0.3rem 0.7rem; border-radius: 20px;">
+          Confiança: {{ dados.precisao }}
+        </span>
       </div>
 
-      <div>
-        <strong style="color: #94a3b8; display: block; font-size: 0.9rem;">Ação Recomendada:</strong>
-        <p style="margin: 0.3rem 0 0 0; color: #4ade80;">{{ resultado.solucao }}</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem;">
+        
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #ef4444; border-radius: 8px; padding: 1rem;">
+          <h4 style="margin: 0 0 0.5rem 0; color: #991b1b; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>⚠️</span> Causa Raiz Identificada:
+          </h4>
+          <p style="margin: 0; color: #334155; font-size: 0.88rem; line-height: 1.5; font-weight: 500;">
+            {{ dados.causaRaiz }}
+          </p>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #22c55e; border-radius: 8px; padding: 1rem;">
+          <h4 style="margin: 0 0 0.5rem 0; color: #166534; font-size: 0.95rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>💡</span> Soluções & Ações Recomendadas:
+          </h4>
+          <ul style="margin: 0; padding-left: 1.2rem; color: #334155; font-size: 0.85rem; line-height: 1.6;">
+            <li *ngFor="let sol of dados.solucoes">{{ sol }}</li>
+          </ul>
+        </div>
+
       </div>
+
+      <div style="margin-top: 1.2rem; background: #0f172a; color: white; padding: 1rem; border-radius: 8px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 0.8rem;">
+        <div style="text-align: center;">
+          <span style="font-size: 0.7rem; color: #94a3b8; display: block; text-transform: uppercase; font-weight: bold;">Velocidade de Corte (Vc)</span>
+          <strong style="font-size: 1.1rem; color: #38bdf8;">{{ dados.ajusteVc }}</strong>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.7rem; color: #94a3b8; display: block; text-transform: uppercase; font-weight: bold;">Avanço (f)</span>
+          <strong style="font-size: 1.1rem; color: #38bdf8;">{{ dados.ajusteF }}</strong>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 0.7rem; color: #94a3b8; display: block; text-transform: uppercase; font-weight: bold;">Refrigeração</span>
+          <strong style="font-size: 1.1rem; color: #38bdf8;">{{ dados.refrigeracao }}</strong>
+        </div>
+      </div>
+
     </div>
+
   </div>
 </div>

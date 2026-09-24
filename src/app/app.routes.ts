@@ -11,10 +11,11 @@ import { Guiadeferramentas } from './pages/guiadeferramentas/guiadeferramentas';
 import { Segurancaeepis } from './pages/segurancaeepis/segurancaeepis';
 import { Tabelasdeconsulta } from './pages/tabelasdeconsulta/tabelasdeconsulta';
 import { Desenhotecnico } from './pages/desenhotecnico/desenhotecnico';
+import { Guiadousuario } from './pages/guiadousuario/guiadousuario';
 
 export const routes: Routes = [
-  { path: 'home', component: Home },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: Home },
   { path: 'cadastro', component: Cadastro },
   { path: 'calculadoradeparametrosdecorte', component: Calculadoradeparametrosdecorte },
   { path: 'centraldemetrologia', component: Centraldemetrologia },
@@ -25,5 +26,6 @@ export const routes: Routes = [
   { path: 'guiadeferramentas', component: Guiadeferramentas },
   { path: 'segurancaeepis', component: Segurancaeepis },
   { path: 'tabelasdeconsulta', component: Tabelasdeconsulta },
-  { path: 'desenhotecnico', component: Desenhotecnico }
+  { path: 'desenhotecnico', component: Desenhotecnico },
+  { path: 'guiadousuario', component: Guiadousuario }
 ];

@@ -1,31 +1,352 @@
-<div style="max-width: 900px; margin: 0 auto; font-family: sans-serif;">
-  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Guia de Uso de Ferramentas e Torques</h2>
-  <p style="color: #64748b;">Consulte os métodos de fixação e os torques de aperto recomendados para cada tipo de ferramenta.</p>
+<style>
+  .ferramentas-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1e293b;
+  }
 
-  <!-- Filtro de Categorias -->
-  <div style="margin-top: 1.5rem; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;">
-    <label style="font-weight: bold; color: #334155; margin-right: 0.5rem;">Filtrar Categoria:</label>
-    <select [(ngModel)]="categoriaSelecionada" style="padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px;">
-      <option value="todas">Todas as Ferramentas</option>
-      <option value="torneamento">Torneamento</option>
-      <option value="fresar">Fresamento</option>
-      <option value="broca">Furação</option>
-    </select>
+  /* Cabeçalho */
+  .header-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-content h1 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #38bdf8;
+  }
+
+  .header-content p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  /* Controlo de Busca e Filtros */
+  .controls-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+    min-width: 280px;
+    max-width: 480px;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+    font-size: 0.95rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: white;
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .search-box input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+  }
+
+  .btn-clear {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+  }
+
+  /* Botoes de Categoria */
+  .categories-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .pill-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  .pill-btn.active {
+    background: #0284c7;
+    color: white;
+    border-color: #0284c7;
+  }
+
+  .results-count {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Grid de Cartões */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* Cartão de Ferramenta */
+  .tool-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .tool-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-top {
+    padding: 1.25rem 1.25rem 0.8rem 1.25rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .card-icon {
+    font-size: 1.8rem;
+    background: #f0f9ff;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .card-title-group h3 {
+    margin: 0.2rem 0 0.2rem 0;
+    font-size: 1rem;
+    color: #0f172a;
+  }
+
+  .iso-code {
+    font-size: 0.78rem;
+    font-family: monospace;
+    background: #f1f5f9;
+    color: #334155;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .category-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  .card-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    flex-grow: 1;
+  }
+
+  .info-block .label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+
+  .info-block p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.4;
+  }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .tip-box {
+    background: #fffbebfb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .tip-box p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #78350f;
+  }
+
+  /* Rodapé do Cartão */
+  .card-footer {
+    background: #0f172a;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .torque-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .torque-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #94a3b8;
+  }
+
+  .torque-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #facc15;
+  }
+</style>
+
+<div class="ferramentas-container">
+  
+  <!-- Cabeçalho -->
+  <header class="header-section">
+    <div class="header-content">
+      <h1>🧰 Guia de Uso de Ferramentas & Torques de Aperto</h1>
+      <p>Catálogo técnico de ferramentas de usinagem CNC e convencional com especificações de fixação, chaves recomendadas e torques de aperto em Nm.</p>
+    </div>
+  </header>
+
+  <!-- Filtros e Pesquisa -->
+  <section class="controls-section">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input 
+        type="text" 
+        [(ngModel)]="termoBusca" 
+        placeholder="Buscar por nome, código ISO, aplicação..." 
+      />
+      <button *ngIf="termoBusca" (click)="termoBusca = ''" class="btn-clear">✕</button>
+    </div>
+
+    <div class="categories-pills">
+      <button 
+        *ngFor="let cat of categorias" 
+        (click)="filtrarPorCategoria(cat)"
+        [class.active]="categoriaSelecionada === cat"
+        class="pill-btn">
+        {{ cat }}
+      </button>
+    </div>
+  </section>
+
+  <!-- Contador de Resultados -->
+  <div class="results-count">
+    A exibir <strong>{{ ferramentasFiltradas.length }}</strong> de <strong>{{ ferramentas.length }}</strong> ferramentas cadastradas
   </div>
 
-  <!-- Lista de Cartões -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
-    @for (f of ferramentasFiltradas; track f.tipo) {
-      <div style="background-color: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <h3 style="margin-top: 0; color: #0284c7; font-size: 1.1rem;">{{ f.tipo }}</h3>
-        <p style="font-size: 0.9rem; color: #475569; margin: 0.5rem 0;"><strong>Aplicação:</strong> {{ f.aplicacao }}</p>
-        <p style="font-size: 0.9rem; color: #475569; margin: 0.5rem 0;"><strong>Fixação:</strong> {{ f.fixacao }}</p>
-        
-        <div style="margin-top: 1rem; background-color: #0f172a; color: white; padding: 0.75rem; border-radius: 6px; text-align: center;">
-          <span style="font-size: 0.8rem; color: #94a3b8; display: block;">Torque Recomendado</span>
-          <strong style="font-size: 1.2rem; color: #facc15;">{{ f.torqueRecomendado }}</strong>
+  <!-- Grid de Cartões -->
+  <div class="tools-grid">
+    <div class="tool-card" *ngFor="let f of ferramentasFiltradas">
+      
+      <div class="card-top">
+        <div class="card-icon">{{ f.icone }}</div>
+        <div class="card-title-group">
+          <span class="category-badge">{{ f.categoria }}</span>
+          <h3>{{ f.nome }}</h3>
+          <span class="iso-code">ISO: {{ f.codigoIso }}</span>
         </div>
       </div>
-    }
+
+      <div class="card-body">
+        <div class="info-block">
+          <span class="label">🎯 Aplicação Principal</span>
+          <p>{{ f.aplicacao }}</p>
+        </div>
+
+        <div class="info-row">
+          <div class="info-block">
+            <span class="label">🔧 Fixação</span>
+            <p>{{ f.fixacao }}</p>
+          </div>
+          <div class="info-block">
+            <span class="label">🗝️ Chave</span>
+            <p>{{ f.chaveTorx }}</p>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <span>💡</span>
+          <p><strong>Dica:</strong> {{ f.dicaTecnica }}</p>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="torque-container">
+          <span class="torque-label">TORQUE DE APERTO</span>
+          <span class="torque-value">⚡ {{ f.torque }}</span>
+        </div>
+      </div>
+
+    </div>
   </div>
+
 </div>

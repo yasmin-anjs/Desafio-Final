@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface Diagnostico {
-  tipo: string;
-  causa: string;
-  solucao: string;
-  severidade: 'Baixa' | 'Média' | 'Alta';
+interface DiagnosticoIA {
+  titulo: string;
+  causaRaiz: string;
+  solucoes: string[];
+  precisao: string;
+  ajusteVc: string;
+  ajusteF: string;
+  refrigeracao: string;
 }
 
 @Component({
@@ -15,38 +18,72 @@ interface Diagnostico {
   templateUrl: './diagnosticosdedesgaste.html',
   styleUrl: './diagnosticosdedesgaste.css'
 })
-export class Diagnosticosdedesgaste {
-  analisando: boolean = false;
-  resultado: Diagnostico | null = null;
+export class DiagnosticosdedesgasteComponent {
+  opcaoSelecionada: string = 'flanco';
 
-  exemplos: { [key: string]: Diagnostico } = {
+  diagnosticos: { [key: string]: DiagnosticoIA } = {
     flanco: {
-      tipo: 'Desgaste de Flanco (VB)',
-      causa: 'Atrito natural prolongado entre a peça e a superfície de folga da ferramenta.',
-      solucao: 'Reduzir a velocidade de corte (Vc) ou selecionar uma classe de metal duro mais resistente ao desgaste.',
-      severidade: 'Média'
+      titulo: 'Desgaste de Flanco (VB)',
+      causaRaiz: 'Velocidade de corte excessiva ou falta de resistência ao desgaste no material do inserto.',
+      solucoes: [
+        'Reduzir a velocidade de corte (Vc).',
+        'Selecionar uma classe de metal duro mais dura / com cobertura PVD/CVD.',
+        'Garantir fluxo contínuo de fluido de corte.'
+      ],
+      precisao: '98.5%',
+      ajusteVc: '⬇️ Reduzir 15%',
+      ajusteF: '↔️ Manter',
+      refrigeracao: 'Abundante (Ativada)'
     },
     bue: {
-      tipo: 'Aresta Postiça de Corte (BUE)',
-      causa: 'Temperatura de corte insuficiente gerando soldagem de material da peça na aresta.',
-      solucao: 'Aumentar a velocidade de corte (Vc) e utilizar fluido de corte sob elevada pressão.',
-      severidade: 'Baixa'
+      titulo: 'Aresta Postiça de Corte (BUE)',
+      causaRaiz: 'Temperatura de corte muito baixa na zona de cavaco, causando soldagem do material no inserto.',
+      solucoes: [
+        'Aumentar a velocidade de corte (Vc) para elevar a temperatura.',
+        'Usar inserto com cobertura mais lisa (TiAlN / DLC).',
+        'Aumentar a pressão do fluido de refrigeração.'
+      ],
+      precisao: '96.2%',
+      ajusteVc: '⬆️ Aumentar 20%',
+      ajusteF: '⬆️ Aumentar 10%',
+      refrigeracao: 'Alta Pressão'
     },
     lascamento: {
-      tipo: 'Lascamento na Aresta',
-      causa: 'Vibrações excessivas, cortes intermitentes severos ou classe de metal duro muito frágil.',
-      solucao: 'Aumentar a tenacidade da classe do inserto e reforçar a rigidez da fixação.',
-      severidade: 'Alta'
+      titulo: 'Lascamento na Aresta',
+      causaRaiz: 'Golpes mecânicos, vibração excessiva da máquina ou tenacidade insuficiente do inserto.',
+      solucoes: [
+        'Selecionar uma classe de inserto mais tenaz.',
+        'Verificar rigidez do fixador da ferramenta e da peça.',
+        'Reduzir o avanço (f) no início do corte.'
+      ],
+      precisao: '94.8%',
+      ajusteVc: '↔️ Manter',
+      ajusteF: '⬇️ Reduzir 25%',
+      refrigeracao: 'Opcional / Seco'
+    },
+    trinca: {
+      titulo: 'Trincas Térmicas',
+      causaRaiz: 'Ciclos alternados de aquecimento e resfriamento rápido (corte intermitente com refrigeração má posicionada).',
+      solucoes: [
+        'Usinar a seco ou aplicar refrigeração muito abundante e direta.',
+        'Usar classe com melhor resistência ao choque térmico.',
+        'Reduzir a velocidade de corte.'
+      ],
+      precisao: '97.1%',
+      ajusteVc: '⬇️ Reduzir 10%',
+      ajusteF: '↔️ Manter',
+      refrigeracao: 'Desativar ou Abundante'
     }
   };
 
-  simularAnalise(tipo: string) {
-    this.analisando = true;
-    this.resultado = null;
+  get dados(): DiagnosticoIA {
+    return this.diagnosticos[this.opcaoSelecionada] || this.diagnosticos['flanco'];
+  }
 
-    setTimeout(() => {
-      this.analisando = false;
-      this.resultado = this.exemplos[tipo];
-    }, 1000);
+  selecionarDesgaste(chave: string): void {
+    this.opcaoSelecionada = chave;
   }
 }
+
+// Exporta exatamente com o nome exigido no app.routes.ts
+export { DiagnosticosdedesgasteComponent as Diagnosticosdedesgaste };

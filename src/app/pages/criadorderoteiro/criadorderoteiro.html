@@ -1,76 +1,239 @@
-<div style="max-width: 900px; margin: 0 auto; font-family: sans-serif;">
-  <h2 style="color: #0f172a; border-bottom: 2px solid #38bdf8; padding-bottom: 0.5rem;">Criador de Roteiro de Usinagem</h2>
-  <p style="color: #64748b;">Monte a folha de processo indicando operações, máquinas, ferramentas e parâmetros de corte.</p>
-
-  <!-- Cabeçalho da Peça -->
-  <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+<div style="max-width: 1100px; margin: 0 auto; font-family: sans-serif;">
+  
+  <!-- Cabeçalho Principal -->
+  <div style="border-bottom: 2px solid #0284c7; padding-bottom: 0.5rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 0.8rem;">
     <div>
-      <label style="font-weight: bold; color: #334155;">Nome da Peça / Componente:</label>
-      <input type="text" [(ngModel)]="nomePeca" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 0.3rem;">
+      <h1 style="margin: 0; color: #0f172a; font-size: 1.8rem; display: flex; align-items: center; gap: 0.6rem;">
+        <span>📋</span> Criador de Roteiro de Usinagem
+      </h1>
+      <p style="margin: 0.4rem 0 0 0; color: #64748b; font-size: 0.95rem;">
+        Elabore a folha de processo de fabricação detalhando máquinas, ferramentas, parâmetros de corte e etapas.
+      </p>
     </div>
-    <div>
-      <label style="font-weight: bold; color: #334155;">Material do Bruto:</label>
-      <input type="text" [(ngModel)]="material" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e1; border-radius: 6px; margin-top: 0.3rem;">
+
+    <!-- Botões de Ação Rápida -->
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+      <button 
+        type="button" 
+        (click)="carregarExemplo()" 
+        style="background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.55rem 0.9rem; border-radius: 8px; font-weight: bold; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem;">
+        ⚡ Carregar Exemplo
+      </button>
+      <button 
+        type="button" 
+        (click)="limparRoteiro()" 
+        style="background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 0.55rem 0.9rem; border-radius: 8px; font-weight: bold; font-size: 0.82rem; cursor: pointer;">
+        🗑️ Limpar
+      </button>
+      <button 
+        type="button" 
+        (click)="imprimirRoteiro()" 
+        style="background-color: #0284c7; color: white; border: none; padding: 0.55rem 1.1rem; border-radius: 8px; font-weight: bold; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3);">
+        🖨️ Imprimir / Salvar PDF
+      </button>
     </div>
   </div>
 
-  <!-- Formulário de Nova Etapa -->
-  <div style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 1rem; margin-top: 1.5rem;">
-    <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem;">Adicionar Nova Operação</h3>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.8rem;">
-      <div>
-        <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Operação:</label>
-        <input type="text" [(ngModel)]="novaEtapa.operacao" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
-      </div>
-      <div>
-        <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Máquina:</label>
-        <input type="text" [(ngModel)]="novaEtapa.maquina" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
-      </div>
-      <div>
-        <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Ferramenta / Inserto:</label>
-        <input type="text" [(ngModel)]="novaEtapa.ferramenta" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
-      </div>
-      <div>
-        <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
-        <input type="number" [(ngModel)]="novaEtapa.vc" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
-      </div>
-      <div>
-        <label style="font-size: 0.85rem; font-weight: bold; color: #475569;">Avanço (mm/volta):</label>
-        <input type="number" step="0.01" [(ngModel)]="novaEtapa.avance" style="width: 100%; padding: 0.4rem; border: 1px solid #cbd5e1; border-radius: 4px;">
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+    <!-- PAINEL 1: CABEÇALHO DO COMPONENTE -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span>⚙️</span> 1. Dados do Componente e Material
+      </h3>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; margin-top: 0.8rem;">
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Nome da Peça / Componente:</label>
+          <input type="text" [(ngModel)]="nomePeca" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Código do Desenho / OS:</label>
+          <input type="text" [(ngModel)]="codigoDesenho" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Material do Bruto:</label>
+          <input type="text" [(ngModel)]="materialBruto" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Dimensões do Bruto (mm):</label>
+          <input type="text" [(ngModel)]="dimensoesBruto" placeholder="Ex: Ø 50mm x 250mm" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Elaborado Por:</label>
+          <input type="text" [(ngModel)]="elaborador" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
       </div>
     </div>
 
-    <button (click)="adicionarEtapa()" style="margin-top: 1rem; background-color: #0284c7; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: bold; cursor: pointer;">
-      + Inserir Operação
-    </button>
-  </div>
+    <!-- PAINEL 2: FORMULÁRIO DE ADIÇÃO DE OPERAÇÃO -->
+    <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+      <h3 style="margin-top: 0; color: #1e293b; font-size: 1.1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <span>➕</span> 2. Adicionar Operação ao Roteiro
+      </h3>
 
-  <!-- Tabela do Roteiro -->
-  <table style="width: 100%; margin-top: 1.5rem; border-collapse: collapse; background-color: white; border: 1px solid #cbd5e1; text-align: left;">
-    <thead>
-      <tr style="background-color: #0f172a; color: white;">
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Seq.</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Operação</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Máquina</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Ferramenta</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Vc</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">f</th>
-        <th style="padding: 0.75rem; border: 1px solid #334155;">Ação</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of roteiro; let i = index" style="border-bottom: 1px solid #e2e8f0;">
-        <td style="padding: 0.75rem; font-weight: bold;">{{ item.sequencia }}</td>
-        <td style="padding: 0.75rem;">{{ item.operacao }}</td>
-        <td style="padding: 0.75rem;">{{ item.maquina }}</td>
-        <td style="padding: 0.75rem;">{{ item.ferramenta }}</td>
-        <td style="padding: 0.75rem;">{{ item.vc }} m/min</td>
-        <td style="padding: 0.75rem;">{{ item.avance }} mm/volta</td>
-        <td style="padding: 0.75rem;">
-          <button (click)="removerEtapa(i)" style="background-color: #ef4444; color: white; border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer;">Excluir</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-top: 0.8rem;">
+        <div style="grid-column: span 2;">
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Descrição da Operação:</label>
+          <input type="text" [(ngModel)]="novaOp" placeholder="Ex: Torneamento Externo e Canal" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Máquina / Posto:</label>
+          <input type="text" [(ngModel)]="novaMaq" placeholder="Ex: Torno CNC Nardini" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Ferramenta / Inserto:</label>
+          <input type="text" [(ngModel)]="novaFerr" placeholder="Ex: WNMG 080408" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Vc (m/min):</label>
+          <input type="number" [(ngModel)]="novoVc" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Avanço f (mm/volta):</label>
+          <input type="number" step="0.01" [(ngModel)]="novoAvanco" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div>
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Prof. Corte ap (mm):</label>
+          <input type="number" step="0.1" [(ngModel)]="novoAp" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+        <div style="grid-column: span 2;">
+          <label style="font-size: 0.8rem; font-weight: bold; color: #475569;">Observações / Instruções Técnicas:</label>
+          <input type="text" [(ngModel)]="novaObs" placeholder="Ex: Utilizar refrigeração abundante; Checar cotas em H7" style="width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; margin-top: 0.2rem;">
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem; text-align: right;">
+        <button 
+          type="button" 
+          (click)="adicionarOperacao()" 
+          style="background-color: #0284c7; color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 8px; font-weight: bold; font-size: 0.88rem; cursor: pointer;">
+          + Inserir Operação no Roteiro
+        </button>
+      </div>
+    </div>
+
+    <!-- PAINEL 3: DOCUMENTO FINAL GERADO (FOLHA DE PROCESSO DE FABRICAÇÃO) -->
+    <div id="secao-folha-impressao" style="background: white; border: 2px solid #0f172a; border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+      
+      <!-- Cabeçalho Oficial do Documento -->
+      <div style="background: #0f172a; color: white; padding: 1rem 1.25rem; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin: -1.5rem -1.5rem 1.25rem -1.5rem;">
+        <div>
+          <span style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: #38bdf8; font-weight: bold; display: block;">DOCUMENTO TÉCNICO DE FABRICAÇÃO</span>
+          <h2 style="margin: 0; font-size: 1.3rem; font-weight: 800;">FOLHA DE PROCESSO DE USINAGEM</h2>
+        </div>
+        <div style="text-align: right; font-size: 0.8rem; color: #cbd5e1;">
+          <div>Data: <strong>{{ dataHoje }}</strong></div>
+          <div>Cód. Desenho: <strong style="color: #38bdf8;">{{ codigoDesenho || 'N/A' }}</strong></div>
+        </div>
+      </div>
+
+      <!-- Grade de Informações Gerais da Peça -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem;">
+        <div>
+          <span style="font-size: 0.7rem; font-weight: bold; color: #64748b; display: block; text-transform: uppercase;">Peça / Componente:</span>
+          <strong style="font-size: 0.95rem; color: #0f172a;">{{ nomePeca || 'Não informado' }}</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.7rem; font-weight: bold; color: #64748b; display: block; text-transform: uppercase;">Material Bruto:</span>
+          <strong style="font-size: 0.95rem; color: #0f172a;">{{ materialBruto || 'Não informado' }}</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.7rem; font-weight: bold; color: #64748b; display: block; text-transform: uppercase;">Dimensões Brutas:</span>
+          <strong style="font-size: 0.95rem; color: #0f172a;">{{ dimensoesBruto || 'Não informado' }}</strong>
+        </div>
+        <div>
+          <span style="font-size: 0.7rem; font-weight: bold; color: #64748b; display: block; text-transform: uppercase;">Responsável Técnico:</span>
+          <strong style="font-size: 0.95rem; color: #0f172a;">{{ elaborador || 'Não informado' }}</strong>
+        </div>
+      </div>
+
+      <!-- Tabela Completa de Sequência de Operações -->
+      <h3 style="margin: 0 0 0.8rem 0; color: #0f172a; font-size: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+        <span>📌</span> Sequência Operacional
+      </h3>
+
+      @if (operacoes.length === 0) {
+        <div style="text-align: center; padding: 2rem 1rem; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; color: #64748b;">
+          <p style="margin: 0; font-size: 0.95rem; font-weight: 500;">Nenhuma operação inserida no roteiro ainda.</p>
+          <p style="margin: 0.3rem 0 0 0; font-size: 0.82rem; color: #94a3b8;">Preencha os campos acima e clique em <strong>"+ Inserir Operação"</strong> ou use o botão <strong>"Carregar Exemplo"</strong>.</p>
+        </div>
+      } @else {
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+            <thead>
+              <tr style="background-color: #0f172a; color: white;">
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b; text-align: center; width: 50px;">OP.</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b;">Descrição da Operação</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b;">Posto / Máquina</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b;">Ferramental / Inserto</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b; text-align: center;">Vc (m/min)</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b; text-align: center;">f (mm/rev)</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b; text-align: center;">ap (mm)</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b;">Instruções Técnicas / Obs</th>
+                <th style="padding: 0.7rem 0.6rem; border: 1px solid #1e293b; text-align: center; width: 80px;" class="no-print">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (op of operacoes; track op.id; let i = $index) {
+                <tr [style.background-color]="i % 2 === 0 ? '#ffffff' : '#f8fafc'">
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; color: #0284c7;">
+                    {{ (i + 1) * 10 }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">
+                    {{ op.operacao }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; color: #334155;">
+                    <span style="background: #e0f2fe; color: #0369a1; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: bold; font-size: 0.75rem;">
+                      {{ op.maquina }}
+                    </span>
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; color: #334155; font-family: monospace; font-size: 0.85rem;">
+                    {{ op.ferramenta }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; color: #0f172a;">
+                    {{ op.vc }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; color: #0f172a;">
+                    {{ op.avanco }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; color: #0f172a;">
+                    {{ op.ap || '-' }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; color: #64748b; font-size: 0.8rem;">
+                    {{ op.obs || '-' }}
+                  </td>
+                  <td style="padding: 0.6rem; border: 1px solid #e2e8f0; text-align: center;" class="no-print">
+                    <div style="display: flex; gap: 0.2rem; justify-content: center;">
+                      <button type="button" (click)="moverOperacao(i, 'up')" style="border: none; background: #f1f5f9; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px;" title="Mover para cima">⬆️</button>
+                      <button type="button" (click)="moverOperacao(i, 'down')" style="border: none; background: #f1f5f9; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px;" title="Mover para baixo">⬇️</button>
+                      <button type="button" (click)="removerOperacao(op.id)" style="border: none; background: #fef2f2; color: #dc2626; cursor: pointer; padding: 0.2rem 0.4rem; border-radius: 4px; font-weight: bold;" title="Remover">✕</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Rodapé do Documento com Assinaturas/Aprovação -->
+        <div style="margin-top: 2rem; border-top: 1px solid #cbd5e1; padding-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+          <div>
+            <div style="border-bottom: 1px solid #0f172a; width: 80%; margin: 0 auto 0.3rem auto; height: 30px;"></div>
+            <span style="font-size: 0.75rem; font-weight: bold; color: #475569;">Preparador / Operador</span>
+          </div>
+          <div>
+            <div style="border-bottom: 1px solid #0f172a; width: 80%; margin: 0 auto 0.3rem auto; height: 30px;"></div>
+            <span style="font-size: 0.75rem; font-weight: bold; color: #475569;">Engenharia de Processos</span>
+          </div>
+          <div>
+            <div style="border-bottom: 1px solid #0f172a; width: 80%; margin: 0 auto 0.3rem auto; height: 30px;"></div>
+            <span style="font-size: 0.75rem; font-weight: bold; color: #475569;">Controle de Qualidade</span>
+          </div>
+        </div>
+      }
+
+    </div>
+
+  </div>
 </div>

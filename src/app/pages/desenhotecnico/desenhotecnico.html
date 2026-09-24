@@ -1,1 +1,181 @@
-<p>desenhotecnico works!</p>
+<div class="dt-container">
+
+  <!-- Cabeçalho Blueprint -->
+  <header class="header-blueprint">
+    <div class="header-badge">MANUAL TÉCNICO DE CHÃO DE FÁBRICA</div>
+    <h1>📐 Desenho Técnico e Leitura de Cotas na Usinagem</h1>
+    <p>Guia prático de interpretação de vistas ortográficas, diedros de projeção, símbolos de tolerância geométrica (GD&T), rugosidade e tolerâncias ISO.</p>
+  </header>
+
+  <!-- Projeções Ortográficas e Diedros -->
+  <section class="section-card">
+    <div class="section-header">
+      <h2>🌐 Projeções Ortográficas: 1º vs 3º Diedro</h2>
+      <div class="diedro-selector">
+        <button [class.active]="diedroSelecionado === '1'" (click)="setDiedro('1')">1º Diedro (Europa / Brasil)</button>
+        <button [class.active]="diedroSelecionado === '3'" (click)="setDiedro('3')">3º Diedro (EUA / ANSI)</button>
+      </div>
+    </div>
+
+    <div class="diedro-display">
+      <div class="diedro-info-box" *ngIf="diedroSelecionado === '1'">
+        <div class="symbol-box">
+          <div class="symbol-icon">📐 ⏀ ⏁</div>
+          <span class="symbol-label">Símbolo ISO (1º Diedro)</span>
+        </div>
+        <div class="diedro-text">
+          <h3>Regra do 1º Diedro (O objeto está ENTRE o observador e o plano)</h3>
+          <ul>
+            <li><strong>Vista Superior:</strong> Desenhada <u>ABAIXO</u> da vista frontal.</li>
+            <li><strong>Vista Lateral Esquerda:</strong> Desenhada à <u>DIREITA</u> da vista frontal.</li>
+            <li><strong>Vista Lateral Direita:</strong> Desenhada à <u>ESQUERDA</u> da vista frontal.</li>
+          </ul>
+          <p class="warning-tip">⚠️ Padrão mais utilizado nas indústrias da América Latina e Europa (ABNT/ISO).</p>
+        </div>
+      </div>
+
+      <div class="diedro-info-box" *ngIf="diedroSelecionado === '3'">
+        <div class="symbol-box">
+          <div class="symbol-icon">⏁ ⏀ 📐</div>
+          <span class="symbol-label">Símbolo ANSI (3º Diedro)</span>
+        </div>
+        <div class="diedro-text">
+          <h3>Regra do 3º Diedro (O plano de projeção está ENTRE o observador e o objeto)</h3>
+          <ul>
+            <li><strong>Vista Superior:</strong> Desenhada <u>ACIMA</u> da vista frontal.</li>
+            <li><strong>Vista Lateral Esquerda:</strong> Desenhada à <u>ESQUERDA</u> da vista frontal.</li>
+            <li><strong>Vista Lateral Direita:</strong> Desenhada à <u>DIREITA</u> da vista frontal.</li>
+          </ul>
+          <p class="warning-tip">⚠️ Padrão muito comum em desenhos vindos dos EUA, Canadá e Japão (ANSI/ASME).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vistas Principais na Usinagem -->
+  <section class="vistas-grid-section">
+    <h2 class="sub-title">👁️ As 4 Vistas e Cortes Fundamentais no Chão de Fábrica</h2>
+    <div class="vistas-grid">
+      
+      <div class="vista-card">
+        <div class="vista-icon">🖼️</div>
+        <h3>1. Vista Frontal (Principal)</h3>
+        <p>Mostra a peça na sua posição principal de usinagem ou montagem. É a vista com maior número de detalhes e dimensões chave.</p>
+      </div>
+
+      <div class="vista-card">
+        <div class="vista-icon">⬇️</div>
+        <h3>2. Vista Superior</h3>
+        <p>Revela rebaixos, rasgo de chavetas, furação em padrão circular e contornos observados de cima.</p>
+      </div>
+
+      <div class="vista-card">
+        <div class="vista-icon">⬅️</div>
+        <h3>3. Vista Lateral</h3>
+        <p>Essencial para verificar espessuras, degraus de eixos, chanfros laterais e perfil de roscas externas.</p>
+      </div>
+
+      <div class="vista-card">
+        <div class="vista-icon">✂️</div>
+        <h3>4. Cortes e Secções (A-A)</h3>
+        <p>Exibe o interior da peça com hachuras metálicas. Vital para identificar rebaixos internos, furos roscados e canais de lubrificação.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Dicionário Interativo de Símbolos e GD&T -->
+  <section class="section-card">
+    <h2>🔍 Dicionário de Símbolos, GD&T e Tolerâncias</h2>
+    <p class="subtitle-text">Pesquise por nome, símbolo ou aplicação em usinagem CNC e convencional:</p>
+
+    <div class="search-bar-wrapper">
+      <div class="search-input-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="text" 
+          [(ngModel)]="termoBusca" 
+          placeholder="Buscar símbolo (ex: Ra, H7, Paralelismo, Batimento)..." 
+        />
+      </div>
+
+      <div class="category-pills">
+        <button 
+          *ngFor="let cat of categorias" 
+          (click)="categoriaSelecionada = cat"
+          [class.active]="categoriaSelecionada === cat"
+          class="pill-btn">
+          {{ cat }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid de Símbolos -->
+    <div class="simbolos-grid">
+      <div class="simbolo-card" *ngFor="let item of simbolosFiltrados">
+        <div class="simbolo-header">
+          <div class="simbolo-badge">{{ item.simbolo }}</div>
+          <div>
+            <span class="simbolo-cat">{{ item.categoria }}</span>
+            <h3>{{ item.nome }}</h3>
+          </div>
+        </div>
+
+        <div class="simbolo-body">
+          <p><strong>Significado:</strong> {{ item.significado }}</p>
+          
+          <div class="exemplo-box">
+            <span>📌 No Desenho:</span>
+            <code>{{ item.exemploUso }}</code>
+          </div>
+
+          <div class="dica-usinagem">
+            <span>💡 Dica de Usinagem:</span>
+            <p>{{ item.dicaUsinagem }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Análise Prática de Interpretação -->
+  <section class="section-card ex-analise">
+    <h2>🛠️ Exemplo de Interpretação Prática de Cotas</h2>
+    <div class="cotas-breakdown">
+      
+      <div class="cota-item" *ngFor="let ex of exemplosLeitura">
+        <div class="cota-tag">{{ ex.cota }}</div>
+        <div class="cota-details">
+          <h4>{{ ex.elemento }}</h4>
+          <p>{{ ex.significado }}</p>
+          <span class="processo-badge">⚙️ {{ ex.toleranciaOuProcesso }}</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Regras de Ouro na Leitura de Desenhos -->
+  <footer class="blueprint-rules">
+    <h3>📌 5 Regras de Ouro ao Ler um Desenho Técnico na Oficina</h3>
+    <div class="rules-flex">
+      <div class="rule-box">
+        <strong>1. Confira a Escala e a Unidade</strong>
+        <p>Confirme se o desenho está em milímetros (mm) ou polegadas (in) e verifique se a escala é 1:1.</p>
+      </div>
+      <div class="rule-box">
+        <strong>2. Identifique o Diedro</strong>
+        <p>Procure o símbolo do tronco de cone na legenda para não inverter usinagens esquerdas/direitas.</p>
+      </div>
+      <div class="rule-box">
+        <strong>3. Verifique o Material e Dureza</strong>
+        <p>Identifique na legenda o aço/liga especificado e se requer tratamento térmico prévio (ex: 58 HRC).</p>
+      </div>
+      <div class="rule-box">
+        <strong>4. Atente para as Notas Gerais</strong>
+        <p>Leia observações do tipo: "Chanfrar todos os cantos vivos com 0,5x45°" ou "Tolerância geral ISO 2768-m".</p>
+      </div>
+    </div>
+  </footer>
+
+</div>
